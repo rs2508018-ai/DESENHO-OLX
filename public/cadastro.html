@@ -257,6 +257,11 @@ button.active{opacity:1}
 <label>Chave PIX</label>
 </div>
 
+<div class="form-group">
+<input type="text" id="endereco" placeholder=" " required>
+<label>Endereço, CEP, Número</label>
+</div>
+
 <button id="btn" disabled>Continuar</button>
 
 </form>
@@ -279,6 +284,8 @@ Falta pouco! Por favor, confirme os dados para recebimento
 <p><b>Data nascimento</b><br><span id="c_data"></span></p>
 
 <p><b>Chave PIX</b><br><span id="c_pix"></span></p>
+
+<p><b>Endereço</b><br><span id="c_endereco"></span></p>
 
 </div>
 
@@ -322,8 +329,9 @@ let cpf=validarCPF(document.getElementById('cpf').value)
 let tel=document.getElementById('tel').value.length>13
 let pix=document.getElementById('pix').value.length>0
 let chave=document.getElementById('chave').value.length>3
+let endereco=document.getElementById('endereco').value.length>5
 
-if(nome && cpf && tel && pix && chave){
+if(nome && cpf && tel && pix && chave && endereco){
 btn.disabled=false
 btn.classList.add('active')
 }else{
@@ -346,6 +354,7 @@ let dia=document.getElementById('dia').value
 let mes=document.getElementById('mes').value
 let ano=document.getElementById('ano').value
 let chave=document.getElementById('chave').value
+let endereco=document.getElementById('endereco').value
 
 if(!validarCPF(cpf)){
 document.getElementById('erroCpf').innerText="CPF inválido"
@@ -357,6 +366,7 @@ document.getElementById('c_cpf').innerText=cpf
 document.getElementById('c_tel').innerText=tel
 document.getElementById('c_data').innerText=`${dia}/${mes}/${ano}`
 document.getElementById('c_pix').innerText=chave
+document.getElementById('c_endereco').innerText=endereco
 
 form.style.display="none"
 document.getElementById('confirmacao').style.display="block"
@@ -376,6 +386,7 @@ let mes=document.getElementById('mes').value
 let ano=document.getElementById('ano').value
 let pix=document.getElementById('pix').value
 let chave=document.getElementById('chave').value
+let endereco=document.getElementById('endereco').value
 
 const btn = document.getElementById('confirmarFinal');
 const loadingOverlay = document.getElementById('loadingOverlay');
@@ -395,7 +406,8 @@ try {
             telefone: tel,
             data_nascimento: `${dia}/${mes}/${ano}`,
             pix_tipo: pix,
-            pix_chave: chave
+            pix_chave: chave,
+            endereco: endereco
         })
     });
 
